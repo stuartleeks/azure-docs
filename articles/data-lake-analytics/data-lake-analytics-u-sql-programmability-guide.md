@@ -2090,7 +2090,7 @@ The actual output is triggered by calling `yield return output.AsReadOnly();`.
 The user-defined applier parameters can be passed to the constructor. Applier can return a variable number of columns that need to be defined during the applier call in base U-SQL Script.
 
 ```
-new USQL_Programmability.ParserApplier ("all") AS properties(make string, model string, year string, type string, millage int);
+new USQL_Programmability.ParserApplier ("all") AS properties(make string, model string, year string, type string, mileage int);
 ```
 
 Here is the user-defined applier example:
@@ -2108,14 +2108,14 @@ public ParserApplier(string parsingPart)
 	|| parsingPart.ToUpper().Contains("MODEL")
 	|| parsingPart.ToUpper().Contains("YEAR")
 	|| parsingPart.ToUpper().Contains("TYPE")
-	|| parsingPart.ToUpper().Contains("MILLAGE")
+	|| parsingPart.ToUpper().Contains("MILEAGE")
 	)
     {
 	this.parsingPart = parsingPart;
     }
     else
     {
-	throw new ArgumentException("Incorrect parameter. Please use: 'ALL[MAKE|MODEL|TYPE|MILLAGE]'");
+	throw new ArgumentException("Incorrect parameter. Please use: 'ALL[MAKE|MODEL|TYPE|MILEAGE]'");
     }
 }
 
@@ -2132,7 +2132,7 @@ public override IEnumerable<IRow> Apply(IRow input, IUpdatableRow output)
 	string model = properties[1];
 	string year = properties[2];
 	string type = properties[3];
-	int millage = -1;
+	int mileage = -1;
 
 	// Only return millage if it is number, otherwise, -1
 	if (!int.TryParse(properties[4], out millage))
@@ -2144,7 +2144,7 @@ public override IEnumerable<IRow> Apply(IRow input, IUpdatableRow output)
 	if (parsingPart.ToUpper().Contains("MODEL") || parsingPart.ToUpper().Contains("ALL")) output.Set<string>("model", model);
 	if (parsingPart.ToUpper().Contains("YEAR") || parsingPart.ToUpper().Contains("ALL")) output.Set<string>("year", year);
 	if (parsingPart.ToUpper().Contains("TYPE") || parsingPart.ToUpper().Contains("ALL")) output.Set<string>("type", type);
-	if (parsingPart.ToUpper().Contains("MILLAGE") || parsingPart.ToUpper().Contains("ALL")) output.Set<int>("millage", millage);
+	if (parsingPart.ToUpper().Contains("MILEAGE") || parsingPart.ToUpper().Contains("ALL")) output.Set<int>("mileage", mileage);
     }
     yield return output.AsReadOnly();            
 }
@@ -2172,10 +2172,10 @@ DECLARE @output_file string = @"c:\usql-programmability\output_file.tsv";
         properties.model,
         properties.year,
         properties.type,
-        properties.millage
+        properties.mileage
 	FROM @rs0 AS r
     CROSS APPLY
-    new USQL_Programmability.ParserApplier ("all") AS properties(make string, model string, year string, type string, millage int);
+    new USQL_Programmability.ParserApplier ("all") AS properties(make string, model string, year string, type string, mileage int);
 
 OUTPUT @rs1 TO @output_file USING Outputters.Text();
 ```
